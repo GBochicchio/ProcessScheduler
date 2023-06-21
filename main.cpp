@@ -67,6 +67,7 @@ void completely_fair_scheduler() {
 }
 
 int main() {
+  while(true){
     srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
 
     // Inizializzazione dei processi
@@ -75,6 +76,7 @@ int main() {
     }
 
     int choice;
+    std::cout << "--------------------------------------------\n";
     std::cout << "Scegli un algoritmo di scheduling:\n";
     std::cout << "1. First Come First Served (FCFS)\n";
     std::cout << "2. Shortest Job First (SJF)\n";
@@ -83,6 +85,9 @@ int main() {
     std::cout << "5. Multilevel Queue Scheduling\n";
     std::cout << "6. Multilevel Feedback Queue Scheduling\n";
     std::cout << "7. Completely Fair Scheduler (CFS)\n";
+    std::cout << "9. Elimina processi e generane di nuovi\n";
+    std::cout << "0. Esci\n";
+    std::cout << "--------------------------------------------\n";
     std::cout << "Inserisci la tua scelta (1-7): ";
     std::cin >> choice;
 
@@ -108,9 +113,17 @@ int main() {
         case 7:
             completely_fair_scheduler();
             break;
+        case 9:
+            processes.clear();
+            std::cout << "Processi eliminati. Generazione di nuovi processi...\n\n";
+            continue;
+          case 0:
+            std::cout << "Arrivederci.\n";
+            return 0;
         default:
             std::cout << "Scelta non valida.\n";
     }
+  }
 
     return 0;
 }
