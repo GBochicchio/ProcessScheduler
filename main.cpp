@@ -17,6 +17,15 @@ public:
 
 std::vector<Process> processes;
 
+void displayProcesses() {
+    std::cout << "ID\tBurst Time\tPriority" << std::endl;
+    std::cout << "--------------------------------" << std::endl;
+
+    for (int i = 0; i < N; i++) {
+      std::cout << processes[i].pid << "\t" << processes[i].burst_time << "\t\t" << processes[i].priority << std::endl;
+    }
+}
+
 void first_come_first_served() {
     std::vector<int> waiting_time(N, 0); // Initialize waiting time for all processes
 
@@ -85,10 +94,12 @@ int main() {
     std::cout << "5. Multilevel Queue Scheduling\n";
     std::cout << "6. Multilevel Feedback Queue Scheduling\n";
     std::cout << "7. Completely Fair Scheduler (CFS)\n";
-    std::cout << "9. Elimina processi e generane di nuovi\n";
-    std::cout << "0. Esci\n";
+    std::cout << "--\n";
+    std::cout << "8. Display Processes\n";
+    std::cout << "9. Clear Processes and Generate New Ones\n";
+    std::cout << "0. Exit\n";
     std::cout << "--------------------------------------------\n";
-    std::cout << "Inserisci la tua scelta (1-7): ";
+    std::cout << "Enter your choice (0-9): ";
     std::cin >> choice;
 
     switch (choice) {
@@ -112,6 +123,10 @@ int main() {
             break;
         case 7:
             completely_fair_scheduler();
+            break;
+        case 8:
+            // Mostra i processi
+            displayProcesses();
             break;
         case 9:
             processes.clear();
