@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <ctime> // Librearia per utilizzare time()
+#include <algorithm> // Per utilizzare std::sort
 
-const int N = 10; // Numero di processi
+const int N = 20; // Numero di processi
 const int QUANTUM = 1; // Quantum per l'algoritmo di Round Robin
 
 class Process {
@@ -16,6 +17,15 @@ public:
 };
 
 std::vector<Process> processes;
+
+void generateProcesses() {
+    srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
+
+    // Genera nuovi processi
+    for (int i = 0; i < N; i++) {
+        processes.emplace_back(i, rand() % 10 + 1, rand() % 3 + 1);
+    }
+}
 
 void displayProcesses() {
     std::cout << "ID\tBurst Time\tPriority" << std::endl;
@@ -51,8 +61,39 @@ void first_come_first_served() {
     std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
 }
 
+bool compareByBurstTime(const Process& a, const Process& b) {
+    return a.burst_time < b.burst_time;
+}
+
 void shortest_job_first() {
-    std::cout << "Shortest Job First non ancora implementato.\n";
+  // Creazione di una copia del vettore processes
+  std::vector<Process> processes_copy = processes;
+
+  // Ordina i processi in base alla durata di esecuzione più breve (burst_time)
+  std::sort(processes_copy.begin(), processes_copy.end(), compareByBurstTime);
+
+  std::vector<int> waiting_time(N, 0); // Inizializza il tempo di attesa per tutti i processi
+
+  // Calcola il tempo di attesa per ciascun processo
+  for (int i = 1; i < N; i++) {
+      waiting_time[i] = waiting_time[i - 1] + processes_copy[i - 1].burst_time;
+  }
+
+  // Calcola il x\ di attesa medio
+  double avg_waiting_time = 0;
+  for (int i = 0; i < N; i++) {
+      avg_waiting_time += waiting_time[i];
+  }
+  avg_waiting_time /= N;
+
+  // Visualizza il risultato dello scheduling
+  std::cout << "SJF Scheduling:\n";
+  std::cout << "Process\tBurst Time\tPriority\tWaiting Time\n";
+  for (int i = 0; i < N; i++) {
+      std::cout << processes_copy[i].pid << "\t" << processes_copy[i].burst_time << "\t\t"
+                << processes_copy[i].priority << "\t\t" << waiting_time[i] << "\n";
+  }
+  std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
 }
 
 void priority_scheduling() {
@@ -76,7 +117,6 @@ void completely_fair_scheduler() {
 }
 
 int main() {
-  while(true){
     srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
 
     // Inizializzazione dei processi
@@ -84,6 +124,7 @@ int main() {
         processes.emplace_back(i, rand() % 10 + 1, rand() % 3 + 1);
     }
 
+  while(true){
     int choice;
     std::cout << "--------------------------------------------\n";
     std::cout << "Scegli un algoritmo di scheduling:\n";
@@ -129,9 +170,13 @@ int main() {
             displayProcesses();
             break;
         case 9:
+            // Elimina
             processes.clear();
-            std::cout << "Processi eliminati. Generazione di nuovi processi...\n\n";
-            continue;
+            std::cout << "Processi eliminati. ";
+            //Genera nuovi processi
+            generateProcesses();
+            std::cout << "Nuovi processi generati.\n";
+            break;
           case 0:
             std::cout << "Arrivederci.\n";
             return 0;
