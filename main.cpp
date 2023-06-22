@@ -97,7 +97,36 @@ void shortest_job_first() {
 }
 
 void priority_scheduling() {
-    std::cout << "Priority Scheduling non ancora implementato.\n";
+  // Creazione di una copia del vettore processes
+  std::vector<Process> processes_copy = processes;
+
+  // Ordina i processi in base alla priorità
+  std::sort(processes_copy.begin(), processes_copy.end(), [](const Process& a, const Process& b) {
+      return a.priority < b.priority;
+  });
+
+  std::vector<int> waiting_time(N, 0); // Inizializza il tempo di attesa per tutti i processi
+
+  // Calcola il tempo di attesa per ciascun processo
+  for (int i = 1; i < N; i++) {
+      waiting_time[i] = waiting_time[i - 1] + processes_copy[i - 1].burst_time;
+  }
+
+  // Calcola il tempo di attesa medio
+  double avg_waiting_time = 0;
+  for (int i = 0; i < N; i++) {
+      avg_waiting_time += waiting_time[i];
+  }
+  avg_waiting_time /= N;
+
+  // Visualizza il risultato dello scheduling
+  std::cout << "Priority Scheduling:\n";
+  std::cout << "Process\tBurst Time\tPriority\tWaiting Time\n";
+  for (int i = 0; i < N; i++) {
+      std::cout << processes_copy[i].pid << "\t" << processes_copy[i].burst_time << "\t\t"
+                << processes_copy[i].priority << "\t\t" << waiting_time[i] << "\n";
+  }
+  std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
 }
 
 void round_robin() {
