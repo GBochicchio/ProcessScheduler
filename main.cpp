@@ -4,7 +4,7 @@
 #include <algorithm> // Per utilizzare std::sort
 
 const int N = 20; // Numero di processi
-const int QUANTUM = 1; // Quantum per l'algoritmo di Round Robin
+const int QUANTUM = 4; // Quantum per l'algoritmo di Round Robin
 
 class Process {
 public:
@@ -23,7 +23,7 @@ void generateProcesses() {
 
     // Genera nuovi processi
     for (int i = 0; i < N; i++) {
-        processes.emplace_back(i, rand() % 10 + 1, rand() % 3 + 1);
+        processes.emplace_back(i, rand() % 20 + 1, rand() % 3 + 1);
     }
 }
 
@@ -130,7 +130,68 @@ void priority_scheduling() {
 }
 
 void round_robin() {
-    std::cout << "Round Robin non ancora implementato.\n";
+  // Inizializza il tempo di attesa e il tempo di completamento per tutti i processi
+std::vector<int> waiting_time(N, 0);
+std::vector<int> completion_time(N, 0);
+
+// Crea una copia del burst time
+std::vector<int> remaining_burst_time(N);
+for (int i = 0; i < N; i++) {
+    remaining_burst_time[i] = processes[i].burst_time;
+}
+
+int time = 0; // L'attuale tempo di sistema
+
+// Continua a eseguire i processi nella coda finché tutti non sono completati
+while (true) {
+    bool done = true;
+
+    // Esegui tutti i processi uno per uno
+    for (int i = 0; i < N; i++) {
+        // Se il burst time del processo è maggiore di 0, allora il processo non è ancora completato
+        if (remaining_burst_time[i] > 0) {
+            done = false; // Esiste ancora un processo in attesa
+
+            if (remaining_burst_time[i] > QUANTUM) {
+                // Aumenta il tempo di sistema di un quantum di tempo
+                time += QUANTUM;
+
+                // Decrementa il burst time del processo di un quantum di tempo
+                remaining_burst_time[i] -= QUANTUM;
+            } else {
+                // Aumenta il tempo di sistema del burst time rimanente del processo
+                time += remaining_burst_time[i];
+
+                // Il tempo di attesa è il tempo di sistema meno il burst time del processo
+                waiting_time[i] = time - processes[i].burst_time;
+
+                // Il burst time rimanente del processo diventa 0
+                remaining_burst_time[i] = 0;
+            }
+        }
+    }
+
+    // Se tutti i processi sono completati
+    if (done == true)
+        break;
+}
+
+// Calcola il tempo di attesa medio
+double avg_waiting_time = 0;
+for (int i = 0; i < N; i++) {
+    avg_waiting_time += waiting_time[i];
+}
+avg_waiting_time /= N;
+
+// Visualizza il risultato dello scheduling
+std::cout << "Round Robin Scheduling:\n";
+std::cout << "Process\tBurst Time\tPriority\tWaiting Time\n";
+for (int i = 0; i < N; i++) {
+    std::cout << processes[i].pid << "\t" << processes[i].burst_time << "\t\t"
+              << processes[i].priority << "\t\t" << waiting_time[i] << "\n";
+}
+std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
+
 }
 
 void multilevel_queue_scheduling() {
@@ -149,9 +210,7 @@ int main() {
     srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
 
     // Inizializzazione dei processi
-    for (int i = 0; i < N; i++) {
-        processes.emplace_back(i, rand() % 10 + 1, rand() % 3 + 1);
-    }
+    generateProcesses();
 
   while(true){
     int choice;
