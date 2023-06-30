@@ -3,7 +3,6 @@
 #include <ctime> // Librearia per utilizzare time()
 #include <algorithm> // Per utilizzare std::sort
 
-const int N = 20; // Numero di processi
 const int QUANTUM = 4; // Quantum per l'algoritmo di Round Robin
 
 class Process {
@@ -16,18 +15,20 @@ public:
         : pid(pid), burst_time(burst_time), priority(priority) {}
 };
 
-std::vector<Process> processes;
-
-void generateProcesses() {
+std::vector<Process> generateProcesses(int num_processes) {
     srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
+    std::vector<Process> processes;
 
     // Genera nuovi processi
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < num_processes; i++) {
         processes.emplace_back(i, rand() % 20 + 1, rand() % 3 + 1);
     }
+
+    return processes;
 }
 
-void displayProcesses() {
+void displayProcesses(const std::vector<Process>& processes) {
+    int N = processes.size(); //Numero di processi
     std::cout << "ID\tBurst Time\tPriority" << std::endl;
     std::cout << "--------------------------------" << std::endl;
 
@@ -36,7 +37,8 @@ void displayProcesses() {
     }
 }
 
-void first_come_first_served() {
+double first_come_first_served(const std::vector<Process>& processes) {
+    int N = processes.size(); //Numero di processi
     std::vector<int> waiting_time(N, 0); // Initialize waiting time for all processes
 
     // Calculate waiting time for each process
@@ -59,13 +61,15 @@ void first_come_first_served() {
                   << processes[i].priority << "\t\t" << waiting_time[i] << "\n";
     }
     std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
+    return avg_waiting_time;
 }
 
 bool compareByBurstTime(const Process& a, const Process& b) {
     return a.burst_time < b.burst_time;
 }
 
-void shortest_job_first() {
+double shortest_job_first(const std::vector<Process>& processes) {
+  int N = processes.size(); //Numero di processi
   // Creazione di una copia del vettore processes
   std::vector<Process> processes_copy = processes;
 
@@ -94,9 +98,11 @@ void shortest_job_first() {
                 << processes_copy[i].priority << "\t\t" << waiting_time[i] << "\n";
   }
   std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
+  return avg_waiting_time;
 }
 
-void priority_scheduling() {
+double priority_scheduling(const std::vector<Process>& processes) {
+  int N = processes.size(); //Numero di processi
   // Creazione di una copia del vettore processes
   std::vector<Process> processes_copy = processes;
 
@@ -127,9 +133,11 @@ void priority_scheduling() {
                 << processes_copy[i].priority << "\t\t" << waiting_time[i] << "\n";
   }
   std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
+  return avg_waiting_time;
 }
 
-void round_robin() {
+double round_robin(const std::vector<Process>& processes) {
+int N = processes.size(); //Numero di processi
   // Inizializza il tempo di attesa e il tempo di completamento per tutti i processi
 std::vector<int> waiting_time(N, 0);
 std::vector<int> completion_time(N, 0);
@@ -191,10 +199,12 @@ for (int i = 0; i < N; i++) {
               << processes[i].priority << "\t\t" << waiting_time[i] << "\n";
 }
 std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
-
+return avg_waiting_time;
 }
 
-void multilevel_queue_scheduling() {
+double multilevel_queue_scheduling(const std::vector<Process>& processes) {
+    int N = processes.size(); //Numero di processi
+    double avg_waiting_time = 0;
     std::cout << "Multilevel Queue Scheduling non ancora implementato.\n";
 }
 
@@ -210,7 +220,7 @@ int main() {
     srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
 
     // Inizializzazione dei processi
-    generateProcesses();
+    std::vector<Process> processes = generateProcesses(10);
 
   while(true){
     int choice;
@@ -233,19 +243,19 @@ int main() {
 
     switch (choice) {
         case 1:
-            first_come_first_served();
+            first_come_first_served(processes);
             break;
         case 2:
-            shortest_job_first();
+            shortest_job_first(processes);
             break;
         case 3:
-            priority_scheduling();
+            priority_scheduling(processes);
             break;
         case 4:
-            round_robin();
+            round_robin(processes);
             break;
         case 5:
-            multilevel_queue_scheduling();
+            multilevel_queue_scheduling(processes);
             break;
         case 6:
             multilevel_feedback_queue_scheduling();
@@ -255,14 +265,14 @@ int main() {
             break;
         case 8:
             // Mostra i processi
-            displayProcesses();
+            displayProcesses(processes);
             break;
         case 9:
             // Elimina
             processes.clear();
             std::cout << "Processi eliminati. ";
             //Genera nuovi processi
-            generateProcesses();
+            processes = generateProcesses(10);
             std::cout << "Nuovi processi generati.\n";
             break;
           case 0:
