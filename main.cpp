@@ -212,7 +212,6 @@ return avg_waiting_time;
 
 double multilevel_queue_scheduling(const std::vector<Process>& processes) {
     int N = processes.size(); //Numero di processi
-    std::cout << "Multilevel Queue Scheduling non ancora implementato.\n";
     std::vector<std::vector<Process>> queues(3); // Creazione di 3 vettori
 
     // Distribuzione casuale dei processi nelle code
@@ -228,19 +227,24 @@ double multilevel_queue_scheduling(const std::vector<Process>& processes) {
     // Coda 2: Shortest Job First (SJF)
     std::cout << "--------------------------------------------\n";
     std::cout << "Coda 0: Round Robin.\n";
-    double avg_waiting_time_0 = round_robin(queues[0]);
+    double avg_waiting_time_0 = 0;
+    avg_waiting_time_0 += round_robin(queues[0]);
     double total_burst_time_0 = total_burst_time(queues[0]); // calcola il tempo totale di burst per la coda 0
     std::cout << "--------------------------------------------\n";
     std::cout << "Coda 1: First Come First Served (FCFS).\n";
-    double avg_waiting_time_1 = first_come_first_served(queues[1]) + total_burst_time_0; // aggiungi il tempo totale di burst della coda 0 al tempo di attesa della coda 1
+    double avg_waiting_time_1 = 0;
+    avg_waiting_time_1 += first_come_first_served(queues[1]) + (total_burst_time_0 * queues[1].size()); // aggiungi il tempo totale di burst della coda 0 al tempo di attesa di ogni processo della coda 1
+    std::cout << "Average Waiting Time (including the previous queue): " << avg_waiting_time_1 << "\n";
     double total_burst_time_1 = total_burst_time(queues[1]); // calcola il tempo totale di burst per la coda 1
     std::cout << "--------------------------------------------\n";
     std::cout << "Coda 2: Shortest Job First (SJF).\n";
-    double avg_waiting_time_2 = shortest_job_first(queues[2]) + total_burst_time_0 + total_burst_time_1; // aggiungi i tempi totali di burst delle code 0 e 1 al tempo di attesa della coda 2
+    double avg_waiting_time_2 = 0;
+    avg_waiting_time_2 += shortest_job_first(queues[2]) + (total_burst_time_0 * queues[1].size()) + (total_burst_time_1 * queues[2].size()); // aggiungi i tempi totali di burst delle code 0 e 1 al tempo di attesa della coda 2
+    std::cout << "Average Waiting Time (including the previous queues): " << avg_waiting_time_2 << "\n";
     std::cout << "--------------------------------------------\n";
 
-    // Calcola il tempo medio di attesa complessivo
-    double avg_waiting_time = (avg_waiting_time_0 + avg_waiting_time_1 + avg_waiting_time_2) / 3;
+    double total_waiting_time = avg_waiting_time_0 + avg_waiting_time_1 + avg_waiting_time_2; // Calcola il tempo di attesa totale complessivo
+    double avg_waiting_time = total_waiting_time / 3; // Calcola il tempo di attesa medio complessivo
     std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
     return avg_waiting_time;
 }
@@ -261,6 +265,7 @@ int main() {
 
   while(true){
     int choice;
+    std::cout << "\n\n";
     std::cout << "--------------------------------------------\n";
     std::cout << "Scegli un algoritmo di scheduling:\n";
     std::cout << "1. First Come First Served (FCFS)\n";
@@ -277,6 +282,7 @@ int main() {
     std::cout << "--------------------------------------------\n";
     std::cout << "Enter your choice (0-9): ";
     std::cin >> choice;
+    std::cout << "\n\n";
 
     switch (choice) {
         case 1:
