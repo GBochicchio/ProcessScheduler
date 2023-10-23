@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <ctime> // Librearia per utilizzare time()
+#include <ctime> // Libreria per utilizzare time()
 #include <algorithm> // Per utilizzare std::sort
 
 const int QUANTUM = 4; // Quantum per l'algoritmo di Round Robin
@@ -35,6 +35,14 @@ void displayProcesses(const std::vector<Process>& processes) {
     for (int i = 0; i < N; i++) {
       std::cout << processes[i].pid << "\t" << processes[i].burst_time << "\t\t" << processes[i].priority << std::endl;
     }
+}
+
+double total_burst_time(const std::vector<Process>& processes) {
+    double total_burst_time = 0;
+    for (const auto& process : processes) {
+        total_burst_time += process.burst_time;
+    }
+    return total_burst_time;
 }
 
 double first_come_first_served(const std::vector<Process>& processes) {
@@ -204,8 +212,37 @@ return avg_waiting_time;
 
 double multilevel_queue_scheduling(const std::vector<Process>& processes) {
     int N = processes.size(); //Numero di processi
-    double avg_waiting_time = 0;
     std::cout << "Multilevel Queue Scheduling non ancora implementato.\n";
+    std::vector<std::vector<Process>> queues(3); // Creazione di 3 vettori
+
+    // Distribuzione casuale dei processi nelle code
+    srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
+    for (const auto& process : processes) {
+        int queue_number = rand() % 3; // Genera un numero casuale tra 0 e 2
+        queues[queue_number].push_back(process); // Aggiungi processo al vettore
+    }
+
+    // Esecuzione dei processi in ogni coda utilizzando un algoritmo di scheduling diverso
+    // Coda 0: Round Robin
+    // Coda 1: First Come First Served (FCFS)
+    // Coda 2: Shortest Job First (SJF)
+    std::cout << "--------------------------------------------\n";
+    std::cout << "Coda 0: Round Robin.\n";
+    double avg_waiting_time_0 = round_robin(queues[0]);
+    double total_burst_time_0 = total_burst_time(queues[0]); // calcola il tempo totale di burst per la coda 0
+    std::cout << "--------------------------------------------\n";
+    std::cout << "Coda 1: First Come First Served (FCFS).\n";
+    double avg_waiting_time_1 = first_come_first_served(queues[1]) + total_burst_time_0; // aggiungi il tempo totale di burst della coda 0 al tempo di attesa della coda 1
+    double total_burst_time_1 = total_burst_time(queues[1]); // calcola il tempo totale di burst per la coda 1
+    std::cout << "--------------------------------------------\n";
+    std::cout << "Coda 2: Shortest Job First (SJF).\n";
+    double avg_waiting_time_2 = shortest_job_first(queues[2]) + total_burst_time_0 + total_burst_time_1; // aggiungi i tempi totali di burst delle code 0 e 1 al tempo di attesa della coda 2
+    std::cout << "--------------------------------------------\n";
+
+    // Calcola il tempo medio di attesa complessivo
+    double avg_waiting_time = (avg_waiting_time_0 + avg_waiting_time_1 + avg_waiting_time_2) / 3;
+    std::cout << "Average Waiting Time: " << avg_waiting_time << "\n";
+    return avg_waiting_time;
 }
 
 void multilevel_feedback_queue_scheduling() {
