@@ -276,7 +276,7 @@ int main() {
       std::cout << "\n\n";
 
       // Controllo sull'input
-      if (std::cin.fail() || choice == 6 || choice == 7 || choice < 1 || choice > 9) {
+      if (std::cin.fail() || choice == 6 || choice == 7 || choice < 0 || choice > 9) {
           std::cout << "Invalid option! Please enter another option, choose from the menu above.\n";
 
           // Pulisci lo stato di errore di std::cin
@@ -286,7 +286,7 @@ int main() {
           std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       }
 
-    } while (std::cin.fail() || choice == 6 || choice == 7 || choice < 1 || choice > 9);
+    } while (std::cin.fail() || choice == 6 || choice == 7 || choice < 0 || choice > 9);
 
     switch (choice) {
         case 1:
