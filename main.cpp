@@ -249,14 +249,6 @@ double multilevel_queue_scheduling(const std::vector<Process>& processes) {
     return avg_waiting_time;
 }
 
-void multilevel_feedback_queue_scheduling() {
-    std::cout << "Multilevel Feedback Queue Scheduling non ancora implementato.\n";
-}
-
-void completely_fair_scheduler() {
-    std::cout << "Completely Fair Scheduler non ancora implementato.\n";
-}
-
 int main() {
     srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
 
@@ -265,24 +257,36 @@ int main() {
 
   while(true){
     int choice;
-    std::cout << "\n\n";
-    std::cout << "--------------------------------------------\n";
-    std::cout << "Scegli un algoritmo di scheduling:\n";
-    std::cout << "1. First Come First Served (FCFS)\n";
-    std::cout << "2. Shortest Job First (SJF)\n";
-    std::cout << "3. Priority Scheduling\n";
-    std::cout << "4. Round Robin (RR)\n";
-    std::cout << "5. Multilevel Queue Scheduling\n";
-    std::cout << "6. Multilevel Feedback Queue Scheduling\n";
-    std::cout << "7. Completely Fair Scheduler (CFS)\n";
-    std::cout << "--\n";
-    std::cout << "8. Display Processes\n";
-    std::cout << "9. Clear Processes and Generate New Ones\n";
-    std::cout << "0. Exit\n";
-    std::cout << "--------------------------------------------\n";
-    std::cout << "Enter your choice (0-9): ";
-    std::cin >> choice;
-    std::cout << "\n\n";
+    do {
+      std::cout << "\n\n";
+      std::cout << "--------------------------------------------\n";
+      std::cout << "Choose a scheduling algorithm:\n";
+      std::cout << "1. First Come First Served (FCFS)\n";
+      std::cout << "2. Shortest Job First (SJF)\n";
+      std::cout << "3. Priority Scheduling\n";
+      std::cout << "4. Round Robin (RR)\n";
+      std::cout << "5. Multilevel Queue Scheduling\n";
+      std::cout << "--\n";
+      std::cout << "8. Display Processes\n";
+      std::cout << "9. Clear Processes and Generate New Ones\n";
+      std::cout << "0. Exit\n";
+      std::cout << "--------------------------------------------\n";
+      std::cout << "Enter your choice (0-9): ";
+      std::cin >> choice;
+      std::cout << "\n\n";
+
+      // Controllo sull'input
+      if (std::cin.fail() || choice == 6 || choice == 7 || choice < 1 || choice > 9) {
+          std::cout << "Invalid option! Please enter another option, choose from the menu above.\n";
+
+          // Pulisci lo stato di errore di std::cin
+          std::cin.clear();
+
+          // Rimuovi eventuali caratteri residui dal buffer di input
+          std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      }
+
+    } while (std::cin.fail() || choice == 6 || choice == 7 || choice < 1 || choice > 9);
 
     switch (choice) {
         case 1:
@@ -300,12 +304,6 @@ int main() {
         case 5:
             multilevel_queue_scheduling(processes);
             break;
-        case 6:
-            multilevel_feedback_queue_scheduling();
-            break;
-        case 7:
-            completely_fair_scheduler();
-            break;
         case 8:
             // Mostra i processi
             displayProcesses(processes);
@@ -313,13 +311,13 @@ int main() {
         case 9:
             // Elimina
             processes.clear();
-            std::cout << "Processi eliminati. ";
+            std::cout << "Processes deleted. ";
             //Genera nuovi processi
             processes = generateProcesses(10);
-            std::cout << "Nuovi processi generati.\n";
+            std::cout << "New processes generated.\n";
             break;
           case 0:
-            std::cout << "Arrivederci.\n";
+            std::cout << "Goodbye.\n";
             return 0;
         default:
             std::cout << "Scelta non valida.\n";
