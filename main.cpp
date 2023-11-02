@@ -2,6 +2,7 @@
 #include <vector>
 #include <ctime> // Libreria per utilizzare time()
 #include <algorithm> // Per utilizzare std::sort
+#include <limits>
 
 const int QUANTUM = 4; // Quantum per l'algoritmo di Round Robin
 
