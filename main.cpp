@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <ctime> // Libreria per utilizzare time()
-#include <algorithm> // Per utilizzare std::sort
+#include <ctime>
+#include <algorithm>
 #include <limits>
 
 const int QUANTUM = 4; // Quantum per l'algoritmo di Round Robin
@@ -17,10 +17,9 @@ public:
 };
 
 std::vector<Process> generateProcesses(int num_processes) {
-    srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
+    srand(time(nullptr));
     std::vector<Process> processes;
 
-    // Genera nuovi processi
     for (int i = 0; i < num_processes; i++) {
         processes.emplace_back(i, rand() % 20 + 1, rand() % 3 + 1);
     }
@@ -48,21 +47,21 @@ double total_burst_time(const std::vector<Process>& processes) {
 
 double first_come_first_served(const std::vector<Process>& processes) {
     int N = processes.size(); //Numero di processi
-    std::vector<int> waiting_time(N, 0); // Initialize waiting time for all processes
+    std::vector<int> waiting_time(N, 0); // Inizializza il waiting time di tutti i processi
 
-    // Calculate waiting time for each process
+    // Calcola il waiting time per ogni processo
     for (int i = 1; i < N; i++) {
         waiting_time[i] = waiting_time[i - 1] + processes[i - 1].burst_time;
     }
 
-    // Calculate average waiting time
+    // Calcola l'average waiting time
     double avg_waiting_time = 0;
     for (int i = 0; i < N; i++) {
         avg_waiting_time += waiting_time[i];
     }
     avg_waiting_time /= N;
 
-    // Display the scheduling result
+    // Mostra i risultati dello scheduling
     std::cout << "FCFS Scheduling:\n";
     std::cout << "Process\tBurst Time\tPriority\tWaiting Time\n";
     for (int i = 0; i < N; i++) {
@@ -251,9 +250,8 @@ double multilevel_queue_scheduling(const std::vector<Process>& processes) {
 }
 
 int main() {
-    srand(time(nullptr)); // Imposta il seme iniziale basato sull'ora di sistema
+    srand(time(nullptr));
 
-    // Inizializzazione dei processi
     std::vector<Process> processes = generateProcesses(10);
 
   while(true){
@@ -279,11 +277,7 @@ int main() {
       // Controllo sull'input
       if (std::cin.fail() || choice == 6 || choice == 7 || choice < 0 || choice > 9) {
           std::cout << "Invalid option! Please enter another option, choose from the menu above.\n";
-
-          // Pulisci lo stato di errore di std::cin
           std::cin.clear();
-
-          // Rimuovi eventuali caratteri residui dal buffer di input
           std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       }
 
@@ -321,7 +315,7 @@ int main() {
             std::cout << "Goodbye.\n";
             return 0;
         default:
-            std::cout << "Scelta non valida.\n";
+            std::cout << "Invalid option.\n";
     }
   }
 
